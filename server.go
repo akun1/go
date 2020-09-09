@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -30,14 +29,8 @@ func message(w http.ResponseWriter, r *http.Request) {
 
 func urlGuzzler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "Error reading request body",
-				http.StatusInternalServerError)
-		}
-
-		var text = string(body) + "m8"
-		fmt.Fprint(w, text)
+		url := r.FormValue("url")
+		fmt.Fprint(w, url)
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
