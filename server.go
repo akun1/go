@@ -36,7 +36,8 @@ func urlGuzzler(w http.ResponseWriter, r *http.Request) {
 				http.StatusInternalServerError)
 		}
 
-		fmt.Fprint(w, string(body))
+		var text = string(body) + "m8"
+		fmt.Fprint(w, text)
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
