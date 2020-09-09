@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -30,10 +31,29 @@ func message(w http.ResponseWriter, r *http.Request) {
 func urlGuzzler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		url := r.FormValue("url")
-		fmt.Fprint(w, url)
+
+		if isValidUrl(url) {
+			fmt.Fprint(w, url)
+		} else {
+			http.Error(w, "Invalid URL", http.StatusInternalServerError)
+		}
 	} else {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 	}
+}
+
+func isValidUrl(toTest string) bool {
+	_, err := url.ParseRequestURI(toTest)
+	if err != nil {
+		return false
+	}
+
+	u, err := url.Parse(toTest)
+	if err != nil || u.Scheme == "" || u.Host == "" {
+		return false
+	}
+
+	return true
 }
 
 // Get the Port from the environment so we can run on Heroku
